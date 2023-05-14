@@ -38,9 +38,9 @@ def run():
         game = Game(board)
 
         try:
-            policy_param = pickle.load(open(model_file),'rb')
+            policy_param = pickle.load(open(model_file,'rb'))
         except:
-            policy_param = pickle.load(open(model_file),'rb')
+            policy_param = pickle.load(open(model_file,'rb'),encoding='bytes')
 
         best_policy = PolicyValueNet(width,height,policy_param)
         mcts_player = MCTSPlayer(best_policy.policy_value_fn, c_puct=5, n_playout=400)
@@ -49,3 +49,6 @@ def run():
 
     except KeyboardInterrupt:
         print('\n\rquit')
+
+if __name__ == "__main__":
+    run()
