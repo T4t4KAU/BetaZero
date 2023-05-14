@@ -85,7 +85,7 @@ class TrainPipeLine:
             print('\n quit')
 
     def collect_selfplay_data(self):
-        winner,play_data = self.game.start_self_play(self.mcts_player,is_shown=True,temp=self.temp)
+        winner,play_data = self.game.start_self_play(self.mcts_player,is_shown=False,temp=self.temp)
         play_data = list(play_data)[:]
         episode_len = len(play_data)
         play_data = self.get_equi_data(play_data)
