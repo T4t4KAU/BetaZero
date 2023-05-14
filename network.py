@@ -133,4 +133,3 @@ class PolicyValueNet:
     def save_model(self, model_file):
         net_params = self.get_policy_param()
         torch.save(net_params, model_file)
-

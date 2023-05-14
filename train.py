@@ -8,10 +8,11 @@ from mcts import MCTSPlayer
 from network import PolicyValueNet
 
 class TrainPipeLine:
-    def __init__(self, save_path, init_model=None):
-        self.board_width = 8
-        self.board_height = 8
-        self.n_in_row = 5
+    def __init__(self, board_width, board_height, n_in_row,
+                 batch_num, save_path, init_model=None,use_gpu=False):
+        self.board_width = board_width
+        self.board_height = board_height
+        self.n_in_row = n_in_row
         self.board = Board(width=self.board_width,
                            height=self.board_height,
                            n_in_row=self.n_in_row)
@@ -30,22 +31,25 @@ class TrainPipeLine:
         self.epoches = 5
         self.kl_targ = 0.02
         self.check_freq = 50
-        self.game_batch_num = 100
+        self.game_batch_num = batch_num
         self.best_win_ratio = 0.0
 
         self.save_path = save_path
+        self.use_gpu = use_gpu
 
         # 加载模型
         if init_model:
             self.policy_value_net = PolicyValueNet(
                 self.board_width,
                 self.board_height,
-                model_file=init_model
+                model_file=init_model,
+                use_gpu=self.use_gpu
             )
         else:
             self.policy_value_net = PolicyValueNet(
                 self.board_width,
                 self.board_height,
+                use_gpu=self.use_gpu
             )
 
         # 初始化AI玩家
@@ -64,7 +68,7 @@ class TrainPipeLine:
                     loss, entropy = self.policy_update()
                     print((
                         "batch i:{}, "
-                        "episode_len:{:.4f}, "
+                        "episode_len:{}, "
                         "loss:{:.4f}, "
                         "entropy:{:.4f}"
                     ).format(i+1,episode_len,loss,entropy))
@@ -75,6 +79,7 @@ class TrainPipeLine:
 
                 if (i+1) % self.check_freq == 0:
                     self.policy_value_net.save_model(self.save_path)
+            self.policy_value_net.save_model(self.save_path)
 
         except KeyboardInterrupt:
             print('\n quit')
@@ -138,5 +143,5 @@ class TrainPipeLine:
         return loss,entropy
 
 if __name__ == "__main__":
-    pipeline = TrainPipeLine("model-8.pt")
+    pipeline = TrainPipeLine(15,15,5,1,save_path="model-15.pth")
     pipeline.run()
