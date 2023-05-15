@@ -1,4 +1,4 @@
-# BetaZero: Gomuku AI
+# BetaZero: Gomoku AI
 
 ## About
 
